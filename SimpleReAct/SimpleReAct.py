@@ -1,5 +1,7 @@
 from dotenv import load_dotenv
-_ = load_dotenv()
+import os
+dotenv_path = os.getenv("../.env")
+load_dotenv(dotenv_path)
 
 from typing import Literal
 from langgraph.graph import StateGraph, MessagesState, START, END
@@ -23,7 +25,7 @@ def get_weather(location: str):
 @tool
 def get_coolest_cities():
     """Get a list of coolest cities"""
-    return "nyc, sf"
+    return "nyc, sf (ca)"
 
 tools = [get_weather, get_coolest_cities]
 tool_node = ToolNode(tools)
@@ -64,25 +66,3 @@ for chunk in app.stream(
     stream_mode="values",
 ):
     chunk["messages"][-1].pretty_print()
-
-
-
-# message_with_multiple_tool_calls = AIMessage(
-#     content="",
-#     tool_calls=[
-#         {
-#             "name": "get_coolest_cities",
-#             "args": {},
-#             "id": "tool_call_id_1",
-#             "type": "tool_call",
-#         },
-#         {
-#             "name": "get_weather",
-#             "args": {"location": "sf"},
-#             "id": "tool_call_id_2",
-#             "type": "tool_call",
-#         },
-#     ],
-# )
-
-# tool_node.invoke({"messages": [message_with_multiple_tool_calls]})
