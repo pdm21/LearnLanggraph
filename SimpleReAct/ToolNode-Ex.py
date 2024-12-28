@@ -44,5 +44,4 @@ model_with_tools = ChatOpenAI(
     model="gpt-3.5-turbo-1106", temperature=0
 ).bind_tools(tools)
 
-model_with_tools.invoke("what's the weather in sf?").tool_calls
 print(tool_node.invoke({"messages": [model_with_tools.invoke("what's the weather in sf?")]}))

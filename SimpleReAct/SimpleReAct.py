@@ -62,7 +62,7 @@ model_with_tools = ChatOpenAI(
 ).bind_tools(tools)
 
 for chunk in app.stream(
-    {"messages": [("human", "what's the weather in the coolest cities?")]},
+    {"messages": [("human", "what's the weather in the coolest cities? Use the get_coolest_cities tool and stick to those cities.")]},
     stream_mode="values",
 ):
     chunk["messages"][-1].pretty_print()
