@@ -37,8 +37,10 @@ def should_continue(state):
     else: 
         return "continue"
 
+# AI processes messages, overwrites with a response (AI Message)
 def call_model(state):
     messages = state['messages']
+    # sent to AI model for processing
     response = model.invoke(messages)
     return {'messages': [response]}
 
@@ -65,6 +67,6 @@ workflow.add_edge("action", "agent")
 app = workflow.compile()
 
 # run code
-inputs = {"messages": [HumanMessage(content="what is the weather in sf?")]}
+inputs = {"messages": [HumanMessage(content="what is 2+2?")]}
 results = app.invoke(inputs)
 print(results)
