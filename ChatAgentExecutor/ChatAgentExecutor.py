@@ -72,7 +72,7 @@ app = workflow.compile()
 # print(results)
 
 # Pretty print each message with labels
-inputs = {"messages": [HumanMessage(content="what is the weather in the capital of Greece?")]}
+inputs = {"messages": [HumanMessage(content="what is the weather in the capital of the state that had the team which won the superbowl in 2018?")]}
 results = app.invoke(inputs)
 
 # Extract messages from results
