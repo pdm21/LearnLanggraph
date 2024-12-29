@@ -67,6 +67,6 @@ workflow.add_edge("action", "agent")
 app = workflow.compile()
 
 # run code
-inputs = {"messages": [HumanMessage(content="what is 2+2?")]}
+inputs = {"messages": [HumanMessage(content="what is the weather in athens, greece?")]}
 results = app.invoke(inputs)
 print(results)
