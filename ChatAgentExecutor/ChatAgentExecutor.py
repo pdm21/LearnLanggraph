@@ -15,7 +15,7 @@ model = ChatOpenAI(temperature=0, streaming=True)
 from langchain_core.utils.function_calling import convert_to_openai_function
 from typing import TypedDict, Annotated, Sequence
 import operator
-from langchain_core.messages import BaseMessage, HumanMessage
+from langchain_core.messages import BaseMessage, HumanMessage, ToolMessage, AIMessage
 import json
 from langgraph.graph import StateGraph, START, END
 
@@ -67,6 +67,30 @@ workflow.add_edge("action", "agent")
 app = workflow.compile()
 
 # run code
-inputs = {"messages": [HumanMessage(content="what is the weather in athens, greece?")]}
+# inputs = {"messages": [HumanMessage(content="what is the weather in the capital of Greece?")]}
+# results = app.invoke(inputs)
+# print(results)
+
+# Pretty print each message with labels
+inputs = {"messages": [HumanMessage(content="what is the weather in the capital of Greece?")]}
 results = app.invoke(inputs)
-print(results)
+
+# Extract messages from results
+messages = results.get('messages', [])
+
+# Pretty print function
+def org_output(messages):
+    for msg in messages:
+        if isinstance(msg, HumanMessage):
+            print("\n[Human]:", msg.content)
+        elif msg.additional_kwargs.get("tool_calls"):
+            print("\n[AI - Tool Call]:")
+            print(json.dumps(msg.additional_kwargs, indent=2)) 
+        elif isinstance(msg, ToolMessage):
+            print("\n[Tool Response]:")
+            print(json.dumps(msg.artifact, indent=2))  
+        elif isinstance(msg, AIMessage):
+            print("\n[AI]:", msg.content)
+
+# Call pretty print
+org_output(messages)
