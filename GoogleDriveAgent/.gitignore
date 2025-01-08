@@ -1,7 +1,13 @@
-# credentials
+# Ignore the entire .credentials directory
+.credentials/
+
+# Explicitly ignore credential-related files
 credentials.json
 token.json
 
-# env fles
+# Ignore environment files
 .env
 *.env
+
+# pycache
+__pycache__/
