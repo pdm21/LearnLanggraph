@@ -1,0 +1,7 @@
+# credentials
+credentials.json
+token.json
+
+# env fles
+.env
+*.env
