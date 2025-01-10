@@ -17,8 +17,8 @@ load_dotenv(dotenv_path)
 # Load documents from Google Drive
 loader = GoogleDriveLoader(
     folder_id="13LE8SEQNHfmfHxTaNEA9hzqzPeODcsKB",
-    credentials_path="credentials.json",
-    token_path="token.json",
+    credentials_path=".credentials/credentials.json",
+    token_path=".credentials/token.json",
     load_auth=True,
 )
 
