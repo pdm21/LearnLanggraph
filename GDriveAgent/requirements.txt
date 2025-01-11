@@ -1,0 +1,9 @@
+langchain==0.3.14
+langchain_community==0.3.14
+langchain_core==0.3.29
+langchain_google_community==2.0.4
+langchain_googledrive==0.3.1
+langchain_openai==0.3.0
+langgraph==0.2.62
+python-dotenv==1.0.1
+typing_extensions==4.12.2
