@@ -45,11 +45,12 @@ def main():
     results = graph.invoke(inputs, config={"configurable": {"thread_id": "1"}})
 
     # Check if `results` contains the expected data
-    if isinstance(results, dict) and 'tweets' in results:
-        messages = results['tweets']  # Extract tweets
+    if isinstance(results, dict) and 'messages' in results:
+        messages = results['messages']  # Extract tweets
         for message in messages:
             if hasattr(message, 'content') and isinstance(message, AIMessage):
                 print(f"Assistant: {message.content}")
+
         
 
 if __name__ == '__main__':

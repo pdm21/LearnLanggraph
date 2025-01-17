@@ -14,7 +14,7 @@ def _get_model(model_name: str):
     model = model.bind_tools(tools)
     return model
 
-# Define the function that determines whether to continue or not
+# Define the function that determines whether to re-generate the tweet or not
 def should_continue(state):
     messages = state["messages"]
     last_message = messages[-1]
@@ -88,18 +88,8 @@ Analyze the tweet across the following dimensions:
    - Does the tweet successfully achieve the initial goal of summarizing and engaging the audience with relevant news about the athlete?
    - Does it contribute positively to the athlete's online presence or brand image?
 
-Provide detailed feedback for each area, highlighting what works well and specific, actionable recommendations for improvement. Ensure your analysis is constructive, professional, and focused on maximizing the tweet's impact and effectiveness.
+If the tweet does not match certain criteria, then improve it.
 """
-# Define the function that calls the Reflection Agent
-def reflection_agent(state, config):
-    messages = state["messages"]
-    messages = [{"role": "system", "content": reflection_agent_prompt}] + messages
-    # CHANGEBTHIS
-    # model_name = config.get('configurable', {}).get("model_name", "openai")
-    # model = _get_model(model_name)
-    # response = model.invoke(messages)
-    # We return a list, because this will get added to the existing list
-    # return {"messages": [response]}
 
 # Define the function to execute tools
 tool_node = ToolNode(tools)
