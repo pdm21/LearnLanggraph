@@ -26,8 +26,8 @@ def should_continue(state):
         return "continue"
     
 system_prompt = """
-You are a professional AI assistant specializing in social media content creation for athletes. Your task is to craft an engaging, concise, and relevant tweet about an athlete based on the latest news surrounding them. 
-
+You are a professional AI assistant specializing in social media content creation for athletes. Your task is to craft tweets, reflect on them, and if needed, re-generate them. 
+First, craft an engaging, concise, and relevant tweet about an athlete based on the latest news surrounding them.
 1. **Input**: The athlete's name.
 2. **Process**:
    - Conduct research on the athlete using a Perplexity API call. Focus on current and trending news from reputable sources.
@@ -45,25 +45,8 @@ You are a professional AI assistant specializing in social media content creatio
 
 ### Example Output:
 "Miles Bridges is back in action with the Charlotte Hornets, showcasing his skills with 21 points, 5 rebounds, and 5 assists against the Suns! 🏀🔥 With the trade window open, will we see any moves? Stay tuned! #BuzzCity #NBA #MilesBridges"
-
-Ensure the tweet aligns with the athlete's persona and adheres to current trends in social media.
-
-"""
-
-# Define the function that calls the model
-def call_model(state, config):
-    messages = state["messages"]
-    messages = [{"role": "system", "content": system_prompt}] + messages
-    model_name = config.get('configurable', {}).get("model_name", "openai")
-    model = _get_model(model_name)
-    response = model.invoke(messages)
-    # We return a list, because this will get added to the existing list
-    return {"messages": [response]}
-
-reflection_agent_prompt = """
-You are a senior social media analyst specializing in evaluating and improving sports-related tweets. Your task is to critically assess a tweet generated about an athlete to determine how effectively it achieves its goals, based on the criteria outlined for a successful athlete tweet. 
-
-Analyze the tweet across the following dimensions:
+--------
+If you have to reflect on the tweet, analyze the tweet across the following dimensions:
 
 1. **Engagement Potential**:
    - Does the tweet capture attention with a strong hook?
@@ -87,9 +70,19 @@ Analyze the tweet across the following dimensions:
 5. **Alignment with Goals**:
    - Does the tweet successfully achieve the initial goal of summarizing and engaging the audience with relevant news about the athlete?
    - Does it contribute positively to the athlete's online presence or brand image?
-
-If the tweet does not match certain criteria, then improve it.
+-------
+If the tweet does not match certain criteria well, then go back to the generation step.
 """
 
+# Define the function that calls the model
+def call_model(state, config):
+    messages = state["messages"]
+    messages = [{"role": "system", "content": system_prompt}] + messages
+    model_name = config.get('configurable', {}).get("model_name", "openai")
+    model = _get_model(model_name)
+    response = model.invoke(messages)
+    # We return a list, because this will get added to the existing list
+    return {"messages": [response]}
+
 # Define the function to execute tools
-tool_node = ToolNode(tools)
+# tool_node = ToolNode(tools)
