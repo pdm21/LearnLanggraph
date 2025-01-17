@@ -4,3 +4,4 @@ from typing import TypedDict, Annotated, Sequence
 
 class AgentState(TypedDict):
     messages: Annotated[Sequence[BaseMessage], add_messages]
+    tweets: Sequence[BaseMessage]

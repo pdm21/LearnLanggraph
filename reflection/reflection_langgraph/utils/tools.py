@@ -13,9 +13,17 @@ print("Perplexity API Key Loaded", os.environ.get('PERPLEXITY_API_KEY') is not N
 perplexity_api_key = os.environ.get('PERPLEXITY_API_KEY')
 openai_api_key = os.environ.get('OPENAI_API_KEY')
 ################################################################################
+from langgraph.types import Command
 
 @tool
-def perplexity_research(api_key: str, model: str, user_message: str) -> dict:
+def perplexity_research(user_message: str) -> dict:
+    """Uses the athlete's name from the initial user query as its input.
+    Calls the Perplexity API to research the athlete and gather the most recent news about them. 
+    """
+    # This information will be used to generate a tweet
+    api_key = perplexity_api_key
+    model = "llama-3.1-sonar-small-128k-online"
+
     url = "https://api.perplexity.ai/chat/completions"
     headers = {
         "Authorization": f"Bearer {api_key}",
@@ -29,11 +37,8 @@ def perplexity_research(api_key: str, model: str, user_message: str) -> dict:
     }
     response = requests.post(url, json=payload, headers=headers)
     response.raise_for_status()
-    return response.json()
-
-    # Example usage
-    # response = perplexity_research(perplexity_api_key, "llama-3.1-sonar-small-128k-online", "What is the latest news on Miles Bridges?")
-    # print(response['choices'][0]['message']['content'])
+    response = response.json()
+    return response['choices'][0]['message']['content']
 
 tools = [perplexity_research]
 
