@@ -45,6 +45,7 @@ You are a professional AI assistant specializing in social media content creatio
 
 ### Example Output:
 "Miles Bridges is back in action with the Charlotte Hornets, showcasing his skills with 21 points, 5 rebounds, and 5 assists against the Suns! 🏀🔥 With the trade window open, will we see any moves? Stay tuned! #BuzzCity #NBA #MilesBridges"
+
 Ensure the tweet aligns with the athlete's persona and adheres to current trends in social media.
 
 """
