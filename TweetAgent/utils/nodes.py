@@ -3,51 +3,62 @@ from langchain_openai import ChatOpenAI
 from utils.tools import tools
 from langgraph.prebuilt import ToolNode
 from langgraph.types import Command
+from langgraph.graph import END
 
 @lru_cache(maxsize=4)
-def _get_model(model_name: str):
-    try:
-        model = ChatOpenAI(temperature=0, model_name="gpt-4o")
-    except:
-        raise ValueError(f"Issue importing model: {model_name}, please check API Key")
-
-    model = model.bind_tools(tools)
-    return model
-
-# Define the function that determines whether to re-generate the tweet or not
-def should_continue(state):
-    messages = state["messages"]
-    last_message = messages[-1]
-    # If there are no tool calls, then we finish
-    if not last_message.tool_calls:
-        return "end"
-    # Otherwise if there is, we continue
-    else:
-        return "continue"
-
-
+def _get_model():
+   model = ChatOpenAI(temperature=0, model_name="gpt-4o")
+   model = model.bind_tools(tools)
+   return model
 
 system_prompt = """
 You are a professional AI assistant specializing in social media content creation for athletes. Your task is to craft tweets, reflect on them, and if needed, re-generate them. 
-First, craft an engaging, concise, and relevant tweet about an athlete based on the latest news surrounding them. Use the Perplexity API to conduct research on today's news. Verify the date with the provided tool if needed.
+First, verify today's date with the provided tool. Then, call the Perplexity API to conduct research and only consider sources posted TODAY. Then, craft an engaging, concise, and relevant tweet about the athlete based on the most recent news piece about them.
+Tweet generation guidelines:
 1. **Input**: The athlete's name.
 2. **Process**:
-   - Conduct research on the athlete using a Perplexity API call. Focus on current and trending news from reputable sources.
-   - Summarize the key points about the athlete's recent activities, achievements, or involvement in newsworthy events.
-   - Based on the summarized information, identify the most tweet-worthy topic.
+   - Get today's date using get_date tool
+   - Call the Perplexity API to get today's articles about the athlete.
+   - Pick an article from today, generate a tweet based on the article's content, and note the source that you obtained this article from.
 3. **Output**: Generate a tweet that:
    - Is under 280 characters.
    - Accurately summarizes or highlights the key news.
    - Is engaging, using a tone suitable for the athlete's audience.
    - Includes relevant hashtags, mentions, or emojis, if appropriate.
    - Avoids misinformation or controversial language.
+   - Add the source from which you obtained the information from in the form of (Source: @Source_Name)
 
 ### Example Input:
 - Athlete: "Miles Bridges"
 
 ### Example Output:
 "Miles Bridges is back in action with the Charlotte Hornets, showcasing his skills with 21 points, 5 rebounds, and 5 assists against the Suns! 🏀🔥 With the trade window open, will we see any moves? Stay tuned! #BuzzCity #NBA #MilesBridges"
---------
+"""
+
+# Define the function that calls the model
+def call_model(state):
+   messages = state["messages"]
+   messages = [{"role": "system", "content": system_prompt}] + messages
+   model = _get_model()
+   response = model.invoke(messages)
+   
+   if not response.tool_calls:
+      next_node = END
+   # Otherwise if there is, we continue
+   else:
+      next_node = "tools"
+   return Command(
+       goto=next_node,
+       update={"messages": [response]}
+   )     
+   
+
+# Define the function to execute tools
+tool_node = ToolNode(tools)
+
+
+regeneration_prompt="""
+
 If you have to reflect on the tweet, analyze the tweet across the following dimensions:
 
 1. **Engagement Potential**:
@@ -75,16 +86,3 @@ If you have to reflect on the tweet, analyze the tweet across the following dime
 -------
 If the tweet does not match certain criteria well, then go back to the generation step.
 """
-
-# Define the function that calls the model
-def call_model(state, config):
-    messages = state["messages"]
-    messages = [{"role": "system", "content": system_prompt}] + messages
-    model_name = config.get('configurable', {}).get("model_name", "openai")
-    model = _get_model(model_name)
-    response = model.invoke(messages)
-    # We return a list, because this will get added to the existing list
-    return {"messages": [response]}
-
-# Define the function to execute tools
-tool_node = ToolNode(tools)
