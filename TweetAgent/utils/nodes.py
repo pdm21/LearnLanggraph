@@ -1,8 +1,8 @@
 from functools import lru_cache
-from langchain_anthropic import ChatAnthropic
 from langchain_openai import ChatOpenAI
 from utils.tools import tools
 from langgraph.prebuilt import ToolNode
+from langgraph.types import Command
 
 @lru_cache(maxsize=4)
 def _get_model(model_name: str):
@@ -24,10 +24,12 @@ def should_continue(state):
     # Otherwise if there is, we continue
     else:
         return "continue"
-    
+
+
+
 system_prompt = """
 You are a professional AI assistant specializing in social media content creation for athletes. Your task is to craft tweets, reflect on them, and if needed, re-generate them. 
-First, craft an engaging, concise, and relevant tweet about an athlete based on the latest news surrounding them.
+First, craft an engaging, concise, and relevant tweet about an athlete based on the latest news surrounding them. Use the Perplexity API to conduct research on today's news. Verify the date with the provided tool if needed.
 1. **Input**: The athlete's name.
 2. **Process**:
    - Conduct research on the athlete using a Perplexity API call. Focus on current and trending news from reputable sources.
@@ -85,4 +87,4 @@ def call_model(state, config):
     return {"messages": [response]}
 
 # Define the function to execute tools
-# tool_node = ToolNode(tools)
+tool_node = ToolNode(tools)

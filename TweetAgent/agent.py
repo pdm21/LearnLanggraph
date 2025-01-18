@@ -5,13 +5,6 @@ from utils.state import AgentState
 from langchain_core.messages import HumanMessage, ToolMessage, AIMessage
 from langgraph.checkpoint.memory import MemorySaver
 
-# define the nodes
-"""
-    - get model
-    - call model
-    - should_continue
-    - reflect
-"""
 class GraphConfig(TypedDict):
     model_name: Literal["openai"]
 
@@ -35,23 +28,22 @@ workflow.add_edge("action", "agent")
 memory = MemorySaver()
 graph = workflow.compile(checkpointer=memory)
 
-
 def main():
     # Get input from the user
     user_input = input("You: ").strip()
     
     # Run the agent with the user's input
     inputs = {"messages": [HumanMessage(content=user_input)]} 
-    results = graph.invoke(inputs, config={"configurable": {"thread_id": "1"}})
+    config = {"configurable": {"thread_id": "1"}}
+    results = graph.invoke(inputs, config=config)
 
     # Check if `results` contains the expected data
     if isinstance(results, dict) and 'messages' in results:
         messages = results['messages']  # Extract tweets
         for message in messages:
             if hasattr(message, 'content') and isinstance(message, AIMessage):
-                print(f"Assistant: {message.content}")
-
-        
+                print(f"Assistant: {message.content}")  
+    print(graph.get_state(config).values["messages"]) 
 
 if __name__ == '__main__':
     main()
