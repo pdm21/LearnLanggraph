@@ -5,7 +5,7 @@ from langgraph.types import Command
 from langgraph.graph import END
 
 from utils.tools import tools
-from utils.prompts import system_prompt, regeneration_prompt
+from utils.prompts import system_prompt
 
 @lru_cache(maxsize=4)
 def _get_model():
