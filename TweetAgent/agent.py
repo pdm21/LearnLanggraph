@@ -37,22 +37,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-# from langchain_openai import ChatOpenAI
-# from utils.tools import tools
-# from langgraph.prebuilt import create_react_agent
-
-# def print_stream(stream):
-#     for s in stream:
-#         message = s["messages"][-1]
-#         if isinstance(message, tuple):
-#             print(message)
-#         else:
-#             message.pretty_print()
-
-# model = ChatOpenAI(temperature=0, model_name="gpt-4o")
-# graph2 = create_react_agent(model, tools=tools)
-# inputs = {"messages": [("user", "Print the research content from AgentState")]}
-# print("################################################################################")
-# print_stream(graph2.stream(inputs, stream_mode="values"))
