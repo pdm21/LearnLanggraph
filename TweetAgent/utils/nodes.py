@@ -5,7 +5,7 @@ from langgraph.types import Command
 from langgraph.graph import END
 
 from utils.tools import tools
-from utils.prompts import system_prompt
+from utils.prompts import system_prompt, system_prompt2
 
 @lru_cache(maxsize=4)
 def _get_model():
@@ -13,7 +13,8 @@ def _get_model():
    model = model.bind_tools(tools)
    return model
 
-system_prompt = system_prompt
+# Remember to change this while testing
+system_prompt = system_prompt2
 
 # Define the function that calls the model
 def call_model(state):

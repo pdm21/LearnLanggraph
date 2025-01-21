@@ -62,12 +62,10 @@ def perplexity_research(user_message: str, tool_call_id: Annotated[str, Injected
     )
 
 # @tool
-# def get_research_content():
+# def get_research_content(state: AgentState):
 #     """Get the research content from state"""
 #     research_content = state['research_content']
 #     return research_content
-#     # return state["research_content"]
-
 
 from datetime import date
 @tool

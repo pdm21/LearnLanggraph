@@ -33,7 +33,7 @@ def main():
             if hasattr(message, 'content') and isinstance(message, ToolMessage):
                 print(f"ToolCall: {message.content}")
             if hasattr(message, 'content') and isinstance(message, AIMessage):
-                print(f"Assistant: {message.content}")  
+                print(f"Assistant: {message.content}") 
 
 if __name__ == '__main__':
     main()
